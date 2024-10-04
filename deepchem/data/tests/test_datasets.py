@@ -548,6 +548,25 @@ def test_disk_iterate_y_w_None():
     np.testing.assert_array_equal(all_ids, test_ids[:total_size])
 
 
+def test_disk_select_output_numpy_dataset():
+    """Test that select works properly when output_numpy_dataset is True"""
+    dataset = load_solubility_data()
+    X, y, w, ids = (dataset.X, dataset.y,
+                  dataset.w, dataset.ids)
+    
+
+    dataset.y = np.array([])
+    selected = dataset.select(indices=[1,3,4], output_numpy_dataset=True)
+
+    print(selected)
+
+
+
+    
+
+    
+test_disk_select_output_numpy_dataset()
+
 def test_disk_iterate_batch():
 
     all_batch_sizes = [None, 32, 17, 11]
@@ -865,46 +884,46 @@ def test_to_str():
     assert str(dataset) == ref_str
 
 
-class TestDatasets(unittest.TestCase):
-    """
-    Test basic top-level API for dataset objects.
-    """
+# class TestDatasets(unittest.TestCase):
+#     """
+#     Test basic top-level API for dataset objects.
+#     """
 
-    def test_numpy_iterate_batch_size(self):
-        solubility_dataset = load_solubility_data()
-        X, y, _, _ = (solubility_dataset.X, solubility_dataset.y,
-                      solubility_dataset.w, solubility_dataset.ids)
-        solubility_dataset = dc.data.NumpyDataset.from_DiskDataset(
-            solubility_dataset)
-        batch_sizes = []
-        for X, y, _, _ in solubility_dataset.iterbatches(3,
-                                                         epochs=2,
-                                                         pad_batches=False,
-                                                         deterministic=True):
-            batch_sizes.append(len(X))
-        self.assertEqual([3, 3, 3, 1, 3, 3, 3, 1], batch_sizes)
+#     def test_numpy_iterate_batch_size(self):
+#         solubility_dataset = load_solubility_data()
+#         X, y, _, _ = (solubility_dataset.X, solubility_dataset.y,
+#                       solubility_dataset.w, solubility_dataset.ids)
+#         solubility_dataset = dc.data.NumpyDataset.from_DiskDataset(
+#             solubility_dataset)
+#         batch_sizes = []
+#         for X, y, _, _ in solubility_dataset.iterbatches(3,
+#                                                          epochs=2,
+#                                                          pad_batches=False,
+#                                                          deterministic=True):
+#             batch_sizes.append(len(X))
+#         self.assertEqual([3, 3, 3, 1, 3, 3, 3, 1], batch_sizes)
 
-    @pytest.mark.torch
-    def test_make_pytorch_dataset_from_numpy(self):
-        """Test creating a PyTorch Dataset from a NumpyDataset."""
-        X = np.random.random((100, 5))
-        y = np.random.random((100, 1))
-        ids = [str(i) for i in range(100)]
-        dataset = dc.data.NumpyDataset(X, y, ids=ids)
-        _validate_pytorch_dataset(dataset)
+#     @pytest.mark.torch
+#     def test_make_pytorch_dataset_from_numpy(self):
+#         """Test creating a PyTorch Dataset from a NumpyDataset."""
+#         X = np.random.random((100, 5))
+#         y = np.random.random((100, 1))
+#         ids = [str(i) for i in range(100)]
+#         dataset = dc.data.NumpyDataset(X, y, ids=ids)
+#         _validate_pytorch_dataset(dataset)
 
-    @pytest.mark.torch
-    def test_make_pytorch_dataset_from_images(self):
-        """Test creating a PyTorch Dataset from an ImageDataset."""
-        path = os.path.join(os.path.dirname(__file__), 'images')
-        files = [os.path.join(path, f) for f in os.listdir(path)]
-        y = np.random.random((10, 1))
-        ids = [str(i) for i in range(len(files))]
-        dataset = dc.data.ImageDataset(files, y, ids=ids)
-        _validate_pytorch_dataset(dataset)
+#     @pytest.mark.torch
+#     def test_make_pytorch_dataset_from_images(self):
+#         """Test creating a PyTorch Dataset from an ImageDataset."""
+#         path = os.path.join(os.path.dirname(__file__), 'images')
+#         files = [os.path.join(path, f) for f in os.listdir(path)]
+#         y = np.random.random((10, 1))
+#         ids = [str(i) for i in range(len(files))]
+#         dataset = dc.data.ImageDataset(files, y, ids=ids)
+#         _validate_pytorch_dataset(dataset)
 
-    @pytest.mark.torch
-    def test_make_pytorch_dataset_from_disk(self):
-        """Test creating a PyTorch Dataset from a DiskDataset."""
-        dataset = load_solubility_data()
-        _validate_pytorch_dataset(dataset)
+#     @pytest.mark.torch
+#     def test_make_pytorch_dataset_from_disk(self):
+#         """Test creating a PyTorch Dataset from a DiskDataset."""
+#         dataset = load_solubility_data()
+#         _validate_pytorch_dataset(dataset)

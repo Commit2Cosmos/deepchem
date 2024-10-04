@@ -2552,6 +2552,12 @@ class DiskDataset(Dataset):
                                               tasks=tasks)
         else:
             X, y, w, ids = next(generator())
+            if len(y) == 0:
+                y = None
+            if len(w) == 0:
+                w = None
+            if len(ids) == 0:
+                ids = None
             return NumpyDataset(X, y, w, ids)
 
     @property
